@@ -1,0 +1,18 @@
+{
+  "name": "bocoup-google-2018q3-okr-metrics-calculator",
+  "version": "1.0.0",
+  "description": "Scripts for calculating OKR scores for the third quarter of 2018",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "@octokit/rest": "^15.11.2",
+    "cheerio": "^1.0.0-rc.2",
+    "moment": "^2.22.2",
+    "replay": "^2.3.0"
+  }
+}
