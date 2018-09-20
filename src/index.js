@@ -16,9 +16,9 @@ yargs.command(
     'wpt-pr-bot <startDate> <endDate>',
     'score the bot',
     {},
-    ({startDate, endDate}) => {
+    async ({startDate, endDate}) => {
       const measureWptPrBot = require('./measure-wpt-pr-bot');
-      measureWptPrBot(startDate, endDate);
+      await measureWptPrBot(startDate, endDate);
     })
   .command(
     'buildbot <startDate> <endDate>',
@@ -29,6 +29,14 @@ yargs.command(
       const { actual, expected } = await measureBuildbot(startDate, endDate);
       console.log('# of results expected: ' + expected);
       console.log('# of results uploaded: ' + actual);
+    })
+  .command(
+    'rc-triage <startDate> <endDate>',
+    'score triage for results collection issues',
+    {},
+    async ({startDate, endDate}) => {
+      const measureRcTriage = require('./measure-rc-triage');
+      await measureRcTriage(startDate, endDate);
     })
   .demandCommand()
   .strict()
