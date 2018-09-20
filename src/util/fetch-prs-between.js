@@ -1,9 +1,16 @@
 'use strict';
 
+const path = require('path');
+
 const moment = require('moment');
-const octokit = require('@octokit/rest')()
+const octokit = require('@octokit/rest')();
 
 const get = require('./http-get');
+const token = require('./load-gh-token')(
+  path.join(__dirname, '..', '..', 'github-token.txt')
+);
+
+octokit.authenticate({ type: 'token', token });
 
 module.exports = async function pullRequestsBetween(startDate, endDate, options) {
   options = Object.assign({}, options, {
