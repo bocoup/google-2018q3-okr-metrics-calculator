@@ -19,10 +19,14 @@ Replay.headers = Replay.headers
 
 octokit.authenticate({ type: 'token', token });
 
-yargs.command('wpt-pr-bot', 'score the bot', () => {
-    const measureWptPrBot = require('./measure-wpt-pr-bot');
-    measureWptPrBot('2018-07-01', '2018-10-01');
-  })
+yargs.command(
+    'wpt-pr-bot <startDate> <endDate>',
+    'score the bot',
+    {},
+    ({startDate, endDate}) => {
+      const measureWptPrBot = require('./measure-wpt-pr-bot');
+      measureWptPrBot(startDate, endDate);
+    })
   .demandCommand()
   .strict()
   .argv;
