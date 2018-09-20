@@ -27,6 +27,16 @@ yargs.command(
       const measureWptPrBot = require('./measure-wpt-pr-bot');
       measureWptPrBot(startDate, endDate);
     })
+  .command(
+    'buildbot <startDate> <endDate>',
+    'score results collection',
+    {},
+    async ({startDate, endDate}) => {
+      const measureBuildbot = require('./measure-buildbot');
+      const { actual, expected } = await measureBuildbot(startDate, endDate);
+      console.log('# of results expected: ' + expected);
+      console.log('# of results uploaded: ' + actual);
+    })
   .demandCommand()
   .strict()
   .argv;
