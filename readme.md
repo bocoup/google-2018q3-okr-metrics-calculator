@@ -2,14 +2,20 @@
 
 ## Requirements
 
-Node.js version 8 or later.
+- Node.js version 8 or later
+- A free user account on GitHub.com
 
 ## Instructions
 
-Execute the following commands in a terminal:
+1. Authenticate with GitHub.com
+   1. Visit https://github.com/settings/tokens
+   2. Create an access token that includes the `public_repo` scope
+   3. Save the access token to a file named `github-token.txt` in the root of
+      this repository
+2. Execute the following commands in a terminal:
 
-    npm install
-    node .
+       npm install
+       node .
 
 ## License
 
