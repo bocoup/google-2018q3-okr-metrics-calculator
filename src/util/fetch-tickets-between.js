@@ -2,7 +2,6 @@
 
 const moment = require('moment');
 
-const get = require('./http-get');
 const ghClient = require('./gh-client');
 
 module.exports = async function fetchTicketsBetween(startDate, endDate, { repo, type }) {
