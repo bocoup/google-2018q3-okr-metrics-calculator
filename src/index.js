@@ -38,6 +38,14 @@ yargs.command(
       const measureRcTriage = require('./measure-rc-triage');
       await measureRcTriage(startDate, endDate);
     })
+  .command(
+    'tc-push <startDate> <endDate>',
+    'score TaskCluster performance on pushes to `master`',
+    {},
+    async ({startDate, endDate}) => {
+      const measureTCPush = require('./measure-tc-push');
+      await measureTCPush(startDate, endDate);
+    })
   .demandCommand()
   .strict()
   .argv;
