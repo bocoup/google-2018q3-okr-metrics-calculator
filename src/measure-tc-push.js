@@ -4,21 +4,6 @@ const moment = require('moment');
 
 const fetchCommitsBetween = require('./util/fetch-commits-between');
 
-const problemState = /error|failure/;
-
-function grade(travisState, taskClusterState) {
-  // TravisCI is assumed to be correct in all cases.
-  if (travisState === taskClusterState) {
-    return 1;
-  }
-
-  if (problemState.test(travisState) && problemState.test(taskClusterState)) {
-    return 1;
-  }
-
-  return 0;
-}
-
 module.exports = async (startDate, endDate) => {
   const owner = 'web-platform-tests';
   const repo = 'wpt';
@@ -27,6 +12,7 @@ module.exports = async (startDate, endDate) => {
   const end = moment(endDate);
 
   const commits = await fetchCommitsBetween(startDate, endDate, {owner, repo, ref});
+  const knownCommits = [];
   const lines = ['SHA | date | TravisCI state | TaskCluster state'];
   let total = 0;
 
@@ -35,7 +21,16 @@ module.exports = async (startDate, endDate) => {
       commit.travisStatus.state : 'unknown';
     const taskClusterState = commit.taskClusterStatus ?
       commit.taskClusterStatus.state : 'unknown';
-    const score = grade(travisState, taskClusterState);
+
+    // Filter out commits that didn't run in either CI system (due to e.g.
+    // fast-forward merges)
+    if (travisState === 'unknown' && taskClusterState === 'unknown') {
+      continue;
+    }
+
+    const score = taskClusterState === 'success' ? 1 : 0;
+
+    knownCommits.push(commit);
 
     lines.push([
       commit.sha, commit.commit.committer.date, travisState, taskClusterState,
@@ -45,9 +40,10 @@ module.exports = async (startDate, endDate) => {
     total += score;
   }
 
-  const score = (100 * total / commits.length).toFixed(2);
+  const score = (100 * total / knownCommits.length).toFixed(2);
   //console.log(lines.join('\n'));
-  console.log('Total commits:       ' + commits.length);
-  console.log('Number in agreement: ' + total);
-  console.log('Overall score:       ' + score + '%');
+  console.log('Total commits:         ' + commits.length);
+  console.log('Total "known" commits: ' + knownCommits.length);
+  console.log('Number in agreement:   ' + total);
+  console.log('Overall score:         ' + score + '%');
 };
