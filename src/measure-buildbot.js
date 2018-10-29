@@ -6,6 +6,9 @@ const { format: formatUrl } = require('url');
 const get = require('./util/http-get');
 
 const q2Start = moment('2018-04-01');
+// Prior to this date, all results were uploaded by the same system, so the
+// "buildbot" label was not available and should not be required.
+const otherUploaders = moment('2018-06-22');
 const milestones = {
   // https://github.com/web-platform-tests/results-collection/commit/c8952d37985b44ebba85585f5436051cec425f4a
   experimental: moment('2018-03-27'),
@@ -64,22 +67,24 @@ const actualCount = async (start, end) => {
   const current = start.clone();
 
   while (current.isBefore(end)) {
+    const previous = current.clone();
+    current.add(7, 'days');
+    const labels = previous.isAfter(otherUploaders) ? ['buildbot'] : [];
+
     const url = formatUrl({
       protocol: 'https',
       hostname: 'wpt.fyi',
       pathname: '/api/runs',
       query: {
-        labels: 'buildbot',
-        'max-count': maxCount,
-        from: current.format()
+        labels,
+        from: previous.utc().format(),
+        to: current.utc().format()
       }
     });
 
     JSON.parse(await get(url))
       .filter((run) => moment(run.created_at).isBetween(start, end))
       .forEach((run) => runs.add(run.id));
-
-    current.add(7, 'days');
   }
 
   return runs.size;
