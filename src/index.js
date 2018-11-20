@@ -46,6 +46,14 @@ yargs.command(
       const measureTCPush = require('./measure-tc-push');
       await measureTCPush(startDate, endDate);
     })
+  .command(
+    'daily-results <startDate> <endDate>',
+    'score results collection (uploaded agnostic)',
+    {},
+    async ({startDate, endDate}) => {
+      const measureDaily = require('./measure-daily-results');
+      await measureDaily(startDate, endDate);
+    })
   .demandCommand()
   .strict()
   .argv;
