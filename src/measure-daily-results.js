@@ -33,7 +33,15 @@ const countResults = async (revision) => {
       });
     })
     .map(async (url) => {
-      const browsers = JSON.parse(await(get(url)))
+      let body;
+
+      try {
+        body = await get(url);
+      } catch (err) {
+        return 0;
+      }
+
+      const browsers = JSON.parse(body)
         .map((run) => run.browser_name)
         .filter((browser_name) =>
           ['firefox', 'chrome', 'edge', 'safari'].includes(browser_name)
